@@ -27,15 +27,15 @@ RUN apk update && apk add --no-cache git \
 ############################
 # Grab old versions from previous version
 ############################
-ARG PG_VERSION
-FROM timescale/timescaledb:${PREV_TS_VERSION}-pg${PG_VERSION}-bitnami AS oldversions
-# Remove update files, mock files, and all but the last 5 .so/.sql files
-USER 0
-RUN rm -f $(pg_config --sharedir)/extension/timescaledb--*--*.sql \
-    && rm -f $(pg_config --sharedir)/extension/timescaledb*mock*.sql \
-    && rm -f $(ls -1 $(pg_config --pkglibdir)/timescaledb-tsl-1*.so | head -n -5) \
-    && rm -f $(ls -1 $(pg_config --pkglibdir)/timescaledb-1*.so | head -n -5) \
-    && rm -f $(ls -1 $(pg_config --sharedir)/extension/timescaledb--1*.sql | head -n -5)
+#ARG PG_VERSION
+#FROM timescale/timescaledb:${PREV_TS_VERSION}-pg${PG_VERSION}-bitnami AS oldversions
+## Remove update files, mock files, and all but the last 5 .so/.sql files
+#USER 0
+#RUN rm -f $(pg_config --sharedir)/extension/timescaledb--*--*.sql \
+#    && rm -f $(pg_config --sharedir)/extension/timescaledb*mock*.sql \
+#    && rm -f $(ls -1 $(pg_config --pkglibdir)/timescaledb-tsl-1*.so | head -n -5) \
+#    && rm -f $(ls -1 $(pg_config --pkglibdir)/timescaledb-1*.so | head -n -5) \
+#    && rm -f $(ls -1 $(pg_config --sharedir)/extension/timescaledb--1*.sql | head -n -5)
 
 ############################
 # Now build image and copy in tools
@@ -51,8 +51,8 @@ ENV TIMESCALEDB_VERSION 2.1.0
 
 COPY docker-entrypoint-initdb.d/* /docker-entrypoint-initdb.d/
 COPY --from=tools /go/bin/* /usr/local/bin/
-COPY --from=oldversions /opt/bitnami/postgresql/lib/timescaledb-*.so /opt/bitnami/postgresql/lib/
-COPY --from=oldversions /opt/bitnami/postgresql/share/extension/timescaledb--*.sql /opt/bitnami/postgresql/share/extension/
+#COPY --from=oldversions /opt/bitnami/postgresql/lib/timescaledb-*.so /opt/bitnami/postgresql/lib/
+#COPY --from=oldversions /opt/bitnami/postgresql/share/extension/timescaledb--*.sql /opt/bitnami/postgresql/share/extension/
 
 USER 0
 RUN set -ex \
