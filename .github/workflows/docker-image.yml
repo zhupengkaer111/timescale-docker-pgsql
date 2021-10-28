@@ -13,35 +13,35 @@ env:
 jobs:
 
   # Build multi-arch TimescaleDB images for both TSL and OSS code.
-  timescaledb:
-
-    name: PG${{ matrix.pg }}${{ matrix.oss }}
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        pg: [12, 13, 14]
-        oss: [ "", "-oss" ]
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v1
-      with:
-        platforms: all
-
-    - name: Set up Docker Buildx
-      id: buildx
-      uses: docker/setup-buildx-action@v1
-
-    - name: Available platforms
-      run: echo ${{ steps.buildx.outputs.platforms }}
-
-    - name: Login to DockerHub Registry
-      run: echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin
-
-    - name: Build and push multi-platform Docker image for TimescaleDB
-      run: make multi${{ matrix.oss }} ORG=$ORG PG_VER=pg${{ matrix.pg }} TS_VERSION=$TS_VERSION PREV_EXTRA="${{ matrix.oss }}"
+#  timescaledb:
+#
+#    name: PG${{ matrix.pg }}${{ matrix.oss }}
+#    runs-on: ubuntu-latest
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        pg: [12, 13, 14]
+#        oss: [ "", "-oss" ]
+#    steps:
+#    - uses: actions/checkout@v2
+#
+#    - name: Set up QEMU
+#      uses: docker/setup-qemu-action@v1
+#      with:
+#        platforms: all
+#
+#    - name: Set up Docker Buildx
+#      id: buildx
+#      uses: docker/setup-buildx-action@v1
+#
+#    - name: Available platforms
+#      run: echo ${{ steps.buildx.outputs.platforms }}
+#
+#    - name: Login to DockerHub Registry
+#      run: echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin
+#
+#    - name: Build and push multi-platform Docker image for TimescaleDB
+#      run: make multi${{ matrix.oss }} ORG=$ORG PG_VER=pg${{ matrix.pg }} TS_VERSION=$TS_VERSION PREV_EXTRA="${{ matrix.oss }}"
 
   # Build bitnami images of TimscaleDB.
   # The images are built only for amd64, since it is the only supported architecture in the base image bitname/postgresql.
@@ -53,7 +53,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        pg: [12, 13, 14]
+        pg: [14]
 
     steps:
     - uses: actions/checkout@v2
